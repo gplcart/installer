@@ -1,0 +1,8 @@
+{
+    "name": "Installer",
+    "version": "1.0.0-dev",
+    "description": "Allows to upload and download modules from various external sources",
+    "author": "Iurii Makukh <gplcart.software@gmail.com>",
+    "core": "1.x",
+    "license": "GPL-3.0+"
+}
