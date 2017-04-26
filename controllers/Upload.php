@@ -116,7 +116,7 @@ class Upload extends BackendController
             return false;
         }
 
-        $result = $this->file->upload($file, 'zip', GC_PRIVATE_DIR . '/installer');
+        $result = $this->file->upload($file, 'zip', GC_PRIVATE_MODULE_DIR . '/installer');
 
         if ($result !== true) {
             $this->setError('file', $result);
