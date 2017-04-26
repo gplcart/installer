@@ -1,0 +1,12 @@
+{
+    "name": "gplcart/installer",
+    "type": "gplcart-module",
+    "description": "Allows to upload and download modules from various external sources",
+    "keywords": ["gplcart", "ecommerce", "shopping cart", "gplcart module", "php"],
+    "license": "GPL-3.0+",
+    "require": {
+        "gplcart/composer-module-installer": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
