@@ -40,8 +40,6 @@ class Download extends BackendController
     public function editDownload()
     {
         $this->downloadErrorsDownload();
-
-        $this->setJob();
         $this->setTitleEditDownload();
         $this->setBreadcrumbEditDownload();
 
