@@ -14,8 +14,8 @@ use gplcart\core\helpers\Zip as ZipHelper,
     gplcart\core\helpers\Url as UrlHelper;
 use gplcart\core\models\Job as JobModel,
     gplcart\core\models\Module as ModuleModel,
-    gplcart\core\models\Backup as BackupModel,
     gplcart\core\models\Language as LanguageModel;
+use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 
 /**
  * Manages basic behaviors and data related to Installer module
@@ -55,7 +55,7 @@ class Install extends Model
 
     /**
      * Backup model instance
-     * @var \gplcart\core\models\Backup $backup
+     * @var \gplcart\modules\backup\models\Backup $backup
      */
     protected $backup;
 
@@ -98,13 +98,14 @@ class Install extends Model
     /**
      * @param ModuleModel $module
      * @param LanguageModel $language
-     * @param BackupModel $backup
+     * @param ModuleBackupModel $backup
      * @param JobModel $job
      * @param ZipHelper $zip
      * @param UrlHelper $url
      */
     public function __construct(ModuleModel $module, LanguageModel $language,
-            BackupModel $backup, JobModel $job, ZipHelper $zip, UrlHelper $url)
+            ModuleBackupModel $backup, JobModel $job, ZipHelper $zip,
+            UrlHelper $url)
     {
         parent::__construct();
 
@@ -286,11 +287,10 @@ class Install extends Model
     {
         try {
             $files = $this->zip->set($file)->getList();
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             return array();
         }
 
-        // There should be at least 2 files: the main module class and module directory
         return count($files) < 2 ? array() : $files;
     }
 

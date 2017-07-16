@@ -4,5 +4,8 @@
     "description": "Allows to upload and download modules from various external sources",
     "author": "Iurii Makukh <gplcart.software@gmail.com>",
     "core": "1.x",
-    "license": "GPL-3.0+"
+    "license": "GPL-3.0+",
+    "dependencies": {
+        "backup": "1.x"
+    }
 }
