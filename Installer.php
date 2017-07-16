@@ -26,6 +26,16 @@ class Installer extends Module
     }
 
     /**
+     * Implements hook "module.install.before"
+     */
+    public function hookModuleInstallBefore(&$result)
+    {
+        if (!class_exists('ZipArchive')) {
+            $result = 'Class ZipArchive does not exist';
+        }
+    }
+
+    /**
      * Implements hook "route.list"
      * @param array $routes
      */
