@@ -31,7 +31,7 @@ class Installer extends Module
     public function hookModuleInstallBefore(&$result)
     {
         if (!class_exists('ZipArchive')) {
-            $result = 'Class ZipArchive does not exist';
+            $result = $this->getLanguage()->text('Class ZipArchive does not exist');
         }
     }
 
@@ -86,6 +86,7 @@ class Installer extends Module
     public function hookCron()
     {
         $directory = GC_PRIVATE_MODULE_DIR . '/installer';
+
         if (is_dir($directory)) {
             gplcart_file_delete_recursive($directory);
         }
