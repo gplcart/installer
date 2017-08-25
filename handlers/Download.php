@@ -53,7 +53,7 @@ class Download
      * The current processing URL
      * @var string
      */
-    protected $url;
+    protected $data_url;
 
     /**
      * @param FileModel $file
@@ -121,11 +121,11 @@ class Download
      */
     protected function download()
     {
-        $this->url = $this->job['data']['sources'][$this->job['done']];
+        $this->data_url = $this->job['data']['sources'][$this->job['done']];
 
-        $filename = md5($this->url);
+        $filename = md5($this->data_url);
         $destination = gplcart_file_unique(GC_PRIVATE_MODULE_DIR . "/installer/$filename.zip");
-        $result = $this->file->download($this->url, 'zip', $destination);
+        $result = $this->file->download($this->data_url, 'zip', $destination);
 
         if ($result !== true) {
             $this->setError($result);
@@ -169,8 +169,8 @@ class Download
     protected function setError($error)
     {
         settype($error, 'array');
-        $existing = empty($this->errors[$this->url]) ? array() : $this->errors[$this->url];
-        $this->errors[$this->url] = gplcart_array_merge($existing, $error);
+        $existing = empty($this->errors[$this->data_url]) ? array() : $this->errors[$this->data_url];
+        $this->errors[$this->data_url] = gplcart_array_merge($existing, $error);
     }
 
 }
