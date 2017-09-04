@@ -120,6 +120,7 @@ class Install extends Model
     /**
      * Installs a module from a ZIP file
      * @param string $zip
+     * @return string|bool
      */
     public function fromZip($zip)
     {
