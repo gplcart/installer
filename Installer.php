@@ -43,15 +43,15 @@ class Installer extends Module
     public function hookRouteList(array &$routes)
     {
         $routes['admin/module/install'] = array(
-            'menu' => array('admin' => 'Install'),
-            'access' => 'installer_module_upload',
+            'menu' => array('admin' => /* @text */'Install'),
+            'access' => 'module_installer_upload',
             'handlers' => array(
                 'controller' => array('gplcart\\modules\\installer\\controllers\\Upload', 'editUpload')
             )
         );
 
         $routes['admin/module/install/download'] = array(
-            'access' => 'installer_module_download',
+            'access' => 'module_installer_download',
             'handlers' => array(
                 'controller' => array('gplcart\\modules\\installer\\controllers\\Download', 'editDownload')
             )
@@ -64,8 +64,8 @@ class Installer extends Module
      */
     public function hookUserPermissions(array &$permissions)
     {
-        $permissions['installer_module_upload'] = 'Installer: upload modules';
-        $permissions['installer_module_download'] = 'Installer: download modules';
+        $permissions['module_installer_upload'] = /* @text */'Installer: upload modules';
+        $permissions['module_installer_download'] = /* @text */'Installer: download modules';
     }
 
     /**

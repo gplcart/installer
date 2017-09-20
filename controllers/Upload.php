@@ -133,7 +133,7 @@ class Upload extends BackendController
     protected function installModuleUpload()
     {
         $this->controlAccess('file_upload');
-        $this->controlAccess('installer_module_upload');
+        $this->controlAccess('module_installer_upload');
 
         $file = $this->getSubmitted('file');
         $result = $this->install->fromZip($file);

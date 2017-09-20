@@ -100,7 +100,7 @@ class Download extends BackendController
     protected function submitDownload()
     {
         if ($this->isPosted('install') && $this->validateDownload()) {
-            $this->controlAccess('installer_module_download');
+            $this->controlAccess('module_installer_download');
             $this->install->fromUrl($this->getSubmitted('sources'));
         }
     }
