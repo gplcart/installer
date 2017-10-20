@@ -124,7 +124,7 @@ class Download
         $this->data_url = $this->job['data']['sources'][$this->job['done']];
 
         $filename = md5($this->data_url);
-        $destination = gplcart_file_unique(GC_PRIVATE_MODULE_DIR . "/installer/$filename.zip");
+        $destination = gplcart_file_private_module('installer', "$filename.zip", true);
         $result = $this->file->download($this->data_url, 'zip', $destination);
 
         if ($result !== true) {

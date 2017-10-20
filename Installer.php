@@ -86,11 +86,7 @@ class Installer extends Module
      */
     public function hookCron()
     {
-        $directory = GC_PRIVATE_MODULE_DIR . '/installer';
-
-        if (is_dir($directory)) {
-            gplcart_file_delete_recursive($directory);
-        }
+        gplcart_file_delete_recursive(gplcart_file_private_module('installer'));
     }
 
 }

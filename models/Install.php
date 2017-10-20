@@ -180,7 +180,7 @@ class Install extends Model
      */
     public function getErrorLogFile()
     {
-        return GC_PRIVATE_TEMP_DIR . '/installer-download-errors.csv';
+        return gplcart_file_private_temp('installer-download-errors.csv');
     }
 
     /**
