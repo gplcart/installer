@@ -216,7 +216,7 @@ class Install extends Model
      */
     protected function extract()
     {
-        $this->destination = GC_MODULE_DIR . "/{$this->module_id}";
+        $this->destination = GC_DIR_MODULE . "/{$this->module_id}";
 
         if (file_exists($this->destination)) {
             $this->tempname = gplcart_file_unique($this->destination . '~');
@@ -227,7 +227,7 @@ class Install extends Model
             $this->renamed = true;
         }
 
-        if ($this->zip->extract(GC_MODULE_DIR)) {
+        if ($this->zip->extract(GC_DIR_MODULE)) {
             return true;
         }
 
