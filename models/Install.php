@@ -9,7 +9,8 @@
 
 namespace gplcart\modules\installer\models;
 
-use gplcart\core\Model;
+use gplcart\core\Database,
+    gplcart\core\Config;
 use gplcart\core\helpers\Zip as ZipHelper,
     gplcart\core\helpers\Url as UrlHelper;
 use gplcart\core\models\Job as JobModel,
@@ -20,8 +21,20 @@ use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 /**
  * Manages basic behaviors and data related to Installer module
  */
-class Install extends Model
+class Install
 {
+
+    /**
+     * Database class instance
+     * @var \gplcart\core\Database $db
+     */
+    protected $db;
+
+    /**
+     * Config class instance
+     * @var \gplcart\core\Config $config
+     */
+    protected $config;
 
     /**
      * Zip helper class instance
@@ -96,6 +109,8 @@ class Install extends Model
     protected $renamed;
 
     /**
+     * @param Database $db
+     * @param Config $config
      * @param ModuleModel $module
      * @param LanguageModel $language
      * @param ModuleBackupModel $backup
@@ -103,11 +118,12 @@ class Install extends Model
      * @param ZipHelper $zip
      * @param UrlHelper $url
      */
-    public function __construct(ModuleModel $module, LanguageModel $language,
-            ModuleBackupModel $backup, JobModel $job, ZipHelper $zip,
+    public function __construct(Database $db, Config $config, ModuleModel $module,
+            LanguageModel $language, ModuleBackupModel $backup, JobModel $job, ZipHelper $zip,
             UrlHelper $url)
     {
-        parent::__construct();
+        $this->db = $db;
+        $this->config = $config;
 
         $this->zip = $zip;
         $this->url = $url;
