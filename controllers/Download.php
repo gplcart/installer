@@ -9,7 +9,7 @@
 
 namespace gplcart\modules\installer\controllers;
 
-use gplcart\modules\installer\models\Install as InstallerModel;
+use gplcart\modules\installer\models\Install as InstallerModuleModel;
 use gplcart\core\controllers\backend\Controller as BackendController;
 
 /**
@@ -22,16 +22,16 @@ class Download extends BackendController
      * Install model instance
      * @var \gplcart\modules\installer\models\Install $install
      */
-    protected $install;
+    protected $install_model;
 
     /**
-     * @param InstallerModel $install
+     * @param InstallerModuleModel $install
      */
-    public function __construct(InstallerModel $install)
+    public function __construct(InstallerModuleModel $install)
     {
         parent::__construct();
 
-        $this->install = $install;
+        $this->install_model = $install;
     }
 
     /**
@@ -88,7 +88,7 @@ class Download extends BackendController
      */
     protected function downloadErrorsDownload()
     {
-        $file = $this->install->getErrorLogFile();
+        $file = $this->install_model->getErrorLogFile();
         if ($this->isQuery('download_errors') && is_file($file)) {
             $this->download($file);
         }
@@ -101,7 +101,7 @@ class Download extends BackendController
     {
         if ($this->isPosted('install') && $this->validateDownload()) {
             $this->controlAccess('module_installer_download');
-            $this->install->fromUrl($this->getSubmitted('sources'));
+            $this->install_model->fromUrl($this->getSubmitted('sources'));
         }
     }
 
