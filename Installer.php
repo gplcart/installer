@@ -9,22 +9,13 @@
 
 namespace gplcart\modules\installer;
 
-use gplcart\core\Module,
-    gplcart\core\Config;
+use gplcart\core\Container;
 
 /**
  * Main class for Installer module
  */
-class Installer extends Module
+class Installer
 {
-
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        parent::__construct($config);
-    }
 
     /**
      * Implements hook "module.install.before"
@@ -88,6 +79,15 @@ class Installer extends Module
     public function hookCron()
     {
         gplcart_file_delete_recursive(gplcart_file_private_module('installer'));
+    }
+
+    /**
+     * Language model class instance
+     * @return \gplcart\core\models\Language
+     */
+    protected function getLanguage()
+    {
+        return Container::get('gplcart\\core\\models\\Language');
     }
 
 }

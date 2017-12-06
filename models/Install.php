@@ -10,7 +10,8 @@
 namespace gplcart\modules\installer\models;
 
 use gplcart\core\Database,
-    gplcart\core\Config;
+    gplcart\core\Config,
+    gplcart\core\Module;
 use gplcart\core\helpers\Zip as ZipHelper,
     gplcart\core\helpers\Url as UrlHelper;
 use gplcart\core\models\Job as JobModel,
@@ -35,6 +36,12 @@ class Install
      * @var \gplcart\core\Config $config
      */
     protected $config;
+
+    /**
+     * Module model instance
+     * @var \gplcart\core\Module $module
+     */
+    protected $module;
 
     /**
      * Zip helper class instance
@@ -62,9 +69,9 @@ class Install
 
     /**
      * Module model instance
-     * @var \gplcart\core\models\Module $module
+     * @var \gplcart\core\models\Module $module_model
      */
-    protected $module;
+    protected $module_model;
 
     /**
      * Backup model instance
@@ -111,26 +118,28 @@ class Install
     /**
      * @param Database $db
      * @param Config $config
-     * @param ModuleModel $module
+     * @param Module $module
+     * @param ModuleModel $module_model
      * @param LanguageModel $language
      * @param ModuleBackupModel $backup
      * @param JobModel $job
      * @param ZipHelper $zip
      * @param UrlHelper $url
      */
-    public function __construct(Database $db, Config $config, ModuleModel $module,
-            LanguageModel $language, ModuleBackupModel $backup, JobModel $job, ZipHelper $zip,
-            UrlHelper $url)
+    public function __construct(Database $db, Config $config, Module $module,
+            ModuleModel $module_model, LanguageModel $language, ModuleBackupModel $backup,
+            JobModel $job, ZipHelper $zip, UrlHelper $url)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->module = $module;
 
         $this->zip = $zip;
         $this->url = $url;
         $this->job = $job;
         $this->backup = $backup;
-        $this->module = $module;
         $this->language = $language;
+        $this->module_model = $module_model;
     }
 
     /**
@@ -271,21 +280,21 @@ class Install
      */
     protected function validate()
     {
-        $this->data = $this->config->getModuleInfo($this->module_id);
+        $this->data = $this->module->getInfo($this->module_id);
 
         if (empty($this->data)) {
             $this->error = $this->language->text('Failed to read module @id', array('@id' => $this->module_id));
             return false;
         }
 
-        $result_core = $this->module->checkCore($this->data);
+        $result_core = $this->module_model->checkCore($this->data);
 
         if ($result_core !== true) {
             $this->error = $result_core;
             return false;
         }
 
-        $result_php = $this->module->checkPhpVersion($this->data);
+        $result_php = $this->module_model->checkPhpVersion($this->data);
 
         if ($result_php !== true) {
             $this->error = $result_php;
@@ -319,7 +328,7 @@ class Install
     protected function setModuleId($file)
     {
         $module_id = $this->getModuleIdFromZip($file);
-        $result = $this->module->checkModuleId($module_id);
+        $result = $this->module_model->checkModuleId($module_id);
 
         if ($result !== true) {
             $this->error = $result;
