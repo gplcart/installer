@@ -9,14 +9,13 @@
 
 namespace gplcart\modules\installer\models;
 
-use gplcart\core\Database,
-    gplcart\core\Config,
+use gplcart\core\Config,
     gplcart\core\Module;
 use gplcart\core\helpers\Zip as ZipHelper,
     gplcart\core\helpers\Url as UrlHelper;
 use gplcart\core\models\Job as JobModel,
     gplcart\core\models\Module as ModuleModel,
-    gplcart\core\models\Language as LanguageModel;
+    gplcart\core\models\Translation as TranslationModel;
 use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 
 /**
@@ -56,10 +55,10 @@ class Install
     protected $url;
 
     /**
-     * Language model instance
-     * @var \gplcart\core\models\Language $language
+     * Translation UI model instance
+     * @var \gplcart\core\models\Translation $translation
      */
-    protected $language;
+    protected $translation;
 
     /**
      * Job model instance
@@ -116,29 +115,28 @@ class Install
     protected $renamed;
 
     /**
-     * @param Database $db
      * @param Config $config
      * @param Module $module
      * @param ModuleModel $module_model
-     * @param LanguageModel $language
+     * @param TranslationModel $translation
      * @param ModuleBackupModel $backup
      * @param JobModel $job
      * @param ZipHelper $zip
      * @param UrlHelper $url
      */
-    public function __construct(Database $db, Config $config, Module $module,
-            ModuleModel $module_model, LanguageModel $language, ModuleBackupModel $backup,
-            JobModel $job, ZipHelper $zip, UrlHelper $url)
+    public function __construct(Config $config, Module $module,
+                                ModuleModel $module_model, TranslationModel $translation, ModuleBackupModel $backup,
+                                JobModel $job, ZipHelper $zip, UrlHelper $url)
     {
-        $this->db = $db;
         $this->config = $config;
         $this->module = $module;
+        $this->db = $this->config->getDb();
 
         $this->zip = $zip;
         $this->url = $url;
         $this->job = $job;
         $this->backup = $backup;
-        $this->language = $language;
+        $this->translation = $translation;
         $this->module_model = $module_model;
     }
 
@@ -184,9 +182,9 @@ class Install
     public function fromUrl(array $sources)
     {
         $total = count($sources);
-        $finish_message = $this->language->text('New modules: %inserted, updated: %updated');
+        $finish_message = $this->translation->text('New modules: %inserted, updated: %updated');
         $vars = array('@url' => $this->url->get('', array('download_errors' => true)));
-        $errors_message = $this->language->text('New modules: %inserted, updated: %updated, errors: %errors. <a href="@url">See error log</a>', $vars);
+        $errors_message = $this->translation->text('New modules: %inserted, updated: %updated, errors: %errors. <a href="@url">See error log</a>', $vars);
 
         $data = array(
             'total' => $total,
@@ -231,7 +229,7 @@ class Install
             return true;
         }
 
-        $this->error = $this->language->text('Failed to backup module @id', array('@id' => $this->module_id));
+        $this->error = $this->translation->text('Failed to backup module @id', array('@id' => $this->module_id));
         return false;
     }
 
@@ -246,7 +244,7 @@ class Install
         if (file_exists($this->destination)) {
             $this->tempname = gplcart_file_unique($this->destination . '~');
             if (!rename($this->destination, $this->tempname)) {
-                $this->error = $this->language->text('Failed to rename @old to @new', array('@old' => $this->destination, '@new' => $this->tempname));
+                $this->error = $this->translation->text('Failed to rename @old to @new', array('@old' => $this->destination, '@new' => $this->tempname));
                 return false;
             }
             $this->renamed = true;
@@ -256,7 +254,7 @@ class Install
             return true;
         }
 
-        $this->error = $this->language->text('Failed to extract to @name', array('@name' => $this->destination));
+        $this->error = $this->translation->text('Failed to extract to @name', array('@name' => $this->destination));
         return false;
     }
 
@@ -283,7 +281,7 @@ class Install
         $this->data = $this->module->getInfo($this->module_id);
 
         if (empty($this->data)) {
-            $this->error = $this->language->text('Failed to read module @id', array('@id' => $this->module_id));
+            $this->error = $this->translation->text('Failed to read module @id', array('@id' => $this->module_id));
             return false;
         }
 
@@ -339,7 +337,7 @@ class Install
         // Check if the module ID actually has enabled status in the database
         // Alternative system methods are based on the scanned module folders so may return incorrect results
         if ($this->isEnabledModule($module_id)) {
-            $this->error = $this->language->text('Module @id is enabled and cannot be updated', array('@id' => $module_id));
+            $this->error = $this->translation->text('Module @id is enabled and cannot be updated', array('@id' => $module_id));
             return false;
         }
 

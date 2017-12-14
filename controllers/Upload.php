@@ -9,8 +9,8 @@
 
 namespace gplcart\modules\installer\controllers;
 
-use gplcart\core\models\File as FileModel,
-    gplcart\core\models\Module as ModuleModel;
+use gplcart\core\models\Module as ModuleModel,
+    gplcart\core\models\FileTransfer as FileTransferModel;
 use gplcart\core\controllers\backend\Controller as BackendController;
 use gplcart\modules\installer\models\Install as InstallerInstallModel;
 
@@ -19,12 +19,6 @@ use gplcart\modules\installer\models\Install as InstallerInstallModel;
  */
 class Upload extends BackendController
 {
-
-    /**
-     * File model class instance
-     * @var \gplcart\core\models\File $file
-     */
-    protected $file;
 
     /**
      * Module model instance
@@ -39,18 +33,24 @@ class Upload extends BackendController
     protected $install;
 
     /**
-     * @param FileModel $file
+     * File transfer model class instance
+     * @var \gplcart\core\models\FileTransfer $file_transfer
+     */
+    protected $file_transfer;
+
+    /**
      * @param ModuleModel $module
+     * @param FileTransferModel $file_transfer
      * @param InstallerInstallModel $install
      */
-    public function __construct(FileModel $file, ModuleModel $module,
+    public function __construct(ModuleModel $module, FileTransferModel $file_transfer,
             InstallerInstallModel $install)
     {
         parent::__construct();
 
-        $this->file = $file;
         $this->module = $module;
         $this->install = $install;
+        $this->file_transfer = $file_transfer;
     }
 
     /**
@@ -116,14 +116,14 @@ class Upload extends BackendController
             return false;
         }
 
-        $result = $this->file->upload($file, 'zip', gplcart_file_private_module('installer'));
+        $result = $this->file_transfer->upload($file, 'zip', gplcart_file_private_module('installer'));
 
         if ($result !== true) {
             $this->setError('file', $result);
             return false;
         }
 
-        $this->setSubmitted('file', $this->file->getTransferred());
+        $this->setSubmitted('file', $this->file_transfer->getTransferred());
         return !$this->hasErrors();
     }
 

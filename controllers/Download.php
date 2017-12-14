@@ -134,7 +134,7 @@ class Download extends BackendController
 
         if (!empty($invalid)) {
             $vars = array('@num' => implode(',', $invalid));
-            $error = $this->language->text('Error on line @num', $vars);
+            $error = $this->text('Error on line @num', $vars);
             $this->setError('sources', $error);
         }
     }

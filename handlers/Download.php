@@ -9,8 +9,8 @@
 
 namespace gplcart\modules\installer\handlers;
 
-use gplcart\core\models\File as FileModel,
-    gplcart\core\models\Language as LanguageModel;
+use gplcart\core\models\Language as LanguageModel,
+    gplcart\core\models\FileTransfer as FileTransferModel;
 use gplcart\modules\installer\models\Install as InstallerInstallModel;
 
 /**
@@ -26,10 +26,10 @@ class Download
     protected $language;
 
     /**
-     * File model instance
-     * @var \gplcart\core\models\File $file
+     * File transfer model instance
+     * @var \gplcart\core\models\FileTransfer $file_transfer
      */
-    protected $file;
+    protected $file_transfer;
 
     /**
      * Installer model class instance
@@ -56,16 +56,16 @@ class Download
     protected $data_url;
 
     /**
-     * @param FileModel $file
+     * @param FileTransferModel $file_transfer
      * @param LanguageModel $language
      * @param InstallerInstallModel $install
      */
-    public function __construct(FileModel $file, LanguageModel $language,
+    public function __construct(FileTransferModel $file_transfer, LanguageModel $language,
             InstallerInstallModel $install)
     {
-        $this->file = $file;
         $this->install = $install;
         $this->language = $language;
+        $this->file_transfer = $file_transfer;
     }
 
     /**
@@ -125,14 +125,14 @@ class Download
 
         $filename = md5($this->data_url);
         $destination = gplcart_file_private_module('installer', "$filename.zip", true);
-        $result = $this->file->download($this->data_url, 'zip', $destination);
+        $result = $this->file_transfer->download($this->data_url, 'zip', $destination);
 
-        if ($result !== true) {
-            $this->setError($result);
-            return false;
+        if ($result === true) {
+            return $this->file_transfer->getTransferred();
         }
 
-        return $this->file->getTransferred();
+        $this->setError($result);
+        return false;
     }
 
     /**
