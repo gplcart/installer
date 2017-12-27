@@ -14,7 +14,7 @@ use gplcart\core\Container;
 /**
  * Main class for Installer module
  */
-class Installer
+class Module
 {
 
     /**
