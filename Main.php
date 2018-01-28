@@ -76,7 +76,7 @@ class Main
     /**
      * Implements hook "hook.cron"
      */
-    public function hookCron()
+    public function hookCronRunAfter()
     {
         gplcart_file_delete_recursive(gplcart_file_private_module('installer'));
     }
