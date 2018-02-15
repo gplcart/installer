@@ -9,13 +9,14 @@
 
 namespace gplcart\modules\installer\models;
 
-use gplcart\core\Config,
-    gplcart\core\Module;
-use gplcart\core\helpers\Zip as ZipHelper,
-    gplcart\core\helpers\Url as UrlHelper;
-use gplcart\core\models\Job as JobModel,
-    gplcart\core\models\Module as ModuleModel,
-    gplcart\core\models\Translation as TranslationModel;
+use Exception;
+use gplcart\core\Config;
+use gplcart\core\helpers\Url as UrlHelper;
+use gplcart\core\helpers\Zip as ZipHelper;
+use gplcart\core\models\Job as JobModel;
+use gplcart\core\models\Module as ModuleModel;
+use gplcart\core\models\Translation as TranslationModel;
+use gplcart\core\Module;
 use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 
 /**
@@ -285,21 +286,14 @@ class Install
             return false;
         }
 
-        $result_core = $this->module_model->checkCore($this->data);
-
-        if ($result_core !== true) {
-            $this->error = $result_core;
+        try {
+            $this->module_model->checkCore($this->data);
+            $this->module_model->checkPhpVersion($this->data);
+            return true;
+        } catch (Exception $ex) {
+            $this->error = $ex->getMessage();
             return false;
         }
-
-        $result_php = $this->module_model->checkPhpVersion($this->data);
-
-        if ($result_php !== true) {
-            $this->error = $result_php;
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -311,7 +305,7 @@ class Install
     {
         try {
             $files = $this->zip->set($file)->getList();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return array();
         }
 
@@ -326,10 +320,11 @@ class Install
     protected function setModuleId($file)
     {
         $module_id = $this->getModuleIdFromZip($file);
-        $result = $this->module_model->checkModuleId($module_id);
 
-        if ($result !== true) {
-            $this->error = $result;
+        try {
+            $this->module_model->checkModuleId($module_id);
+        } catch (Exception $ex) {
+            $this->error = $ex->getMessage();
             return false;
         }
 
