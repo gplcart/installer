@@ -1,21 +1,21 @@
 <?php
 
 /**
- * @package Installer 
- * @author Iurii Makukh <gplcart.software@gmail.com> 
- * @copyright Copyright (c) 2017, Iurii Makukh <gplcart.software@gmail.com> 
- * @license https://www.gnu.org/licenses/gpl-3.0.en.html GPL-3.0+ 
+ * @package Installer
+ * @author Iurii Makukh <gplcart.software@gmail.com>
+ * @copyright Copyright (c) 2017, Iurii Makukh <gplcart.software@gmail.com>
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GPL-3.0+
  */
 
 namespace gplcart\modules\installer\controllers;
 
-use gplcart\modules\installer\models\Install as InstallerModuleModel;
-use gplcart\core\controllers\backend\Controller as BackendController;
+use gplcart\core\controllers\backend\Controller;
+use gplcart\modules\installer\models\Install;
 
 /**
  * Handles incoming requests and outputs data related to Installer module
  */
-class Download extends BackendController
+class Download extends Controller
 {
 
     /**
@@ -25,9 +25,9 @@ class Download extends BackendController
     protected $install_model;
 
     /**
-     * @param InstallerModuleModel $install
+     * @param Install $install
      */
-    public function __construct(InstallerModuleModel $install)
+    public function __construct(Install $install)
     {
         parent::__construct();
 
@@ -46,8 +46,9 @@ class Download extends BackendController
         $this->submitDownload();
 
         $sources = $this->getData('download.sources');
+
         if (is_array($sources)) {
-            $this->setData('download.sources', implode("\n", $sources));
+            $this->setData('download.sources', implode(PHP_EOL, $sources));
         }
 
         $this->outputEditDownload();
@@ -58,8 +59,7 @@ class Download extends BackendController
      */
     protected function setTitleEditDownload()
     {
-        $vars = array('%name' => $this->text('Installer'));
-        $title = $this->text('Edit %name settings', $vars);
+        $title = $this->text('Edit %name settings', array('%name' => $this->text('Installer')));
         $this->setTitle($title);
     }
 
@@ -89,6 +89,7 @@ class Download extends BackendController
     protected function downloadErrorsDownload()
     {
         $file = $this->install_model->getErrorLogFile();
+
         if ($this->isQuery('download_errors') && is_file($file)) {
             $this->download($file);
         }
@@ -112,7 +113,6 @@ class Download extends BackendController
     {
         $this->setSubmitted('download');
         $this->setSubmittedArray('sources');
-
         $this->validateElement('sources', 'required');
         $this->validateUrlDownload();
 
@@ -125,6 +125,7 @@ class Download extends BackendController
     protected function validateUrlDownload()
     {
         $invalid = array();
+
         foreach ($this->getSubmitted('sources') as $line => $url) {
             $line++;
             if (filter_var($url, FILTER_VALIDATE_URL) === false) {
@@ -133,9 +134,7 @@ class Download extends BackendController
         }
 
         if (!empty($invalid)) {
-            $vars = array('@num' => implode(',', $invalid));
-            $error = $this->text('Error on line @num', $vars);
-            $this->setError('sources', $error);
+            $this->setError('sources', $this->text('Error on line @num', array('@num' => implode(',', $invalid))));
         }
     }
 

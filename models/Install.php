@@ -11,13 +11,12 @@ namespace gplcart\modules\installer\models;
 
 use Exception;
 use gplcart\core\Config;
-use gplcart\core\helpers\Url as UrlHelper;
-use gplcart\core\helpers\Zip as ZipHelper;
-use gplcart\core\models\Job as JobModel;
+use gplcart\core\helpers\Url;
+use gplcart\core\helpers\Zip;
+use gplcart\core\models\Job;
 use gplcart\core\models\Module as ModuleModel;
-use gplcart\core\models\Translation as TranslationModel;
+use gplcart\core\models\Translation;
 use gplcart\core\Module;
-use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 
 /**
  * Manages basic behaviors and data related to Installer module
@@ -74,12 +73,6 @@ class Install
     protected $module_model;
 
     /**
-     * Backup model instance
-     * @var \gplcart\modules\backup\models\Backup $backup
-     */
-    protected $backup;
-
-    /**
      * The latest validation error
      * @var string
      */
@@ -116,18 +109,17 @@ class Install
     protected $renamed;
 
     /**
+     * Install constructor.
      * @param Config $config
      * @param Module $module
      * @param ModuleModel $module_model
-     * @param TranslationModel $translation
-     * @param ModuleBackupModel $backup
-     * @param JobModel $job
-     * @param ZipHelper $zip
-     * @param UrlHelper $url
+     * @param Translation $translation
+     * @param Job $job
+     * @param Zip $zip
+     * @param Url $url
      */
-    public function __construct(Config $config, Module $module,
-                                ModuleModel $module_model, TranslationModel $translation, ModuleBackupModel $backup,
-                                JobModel $job, ZipHelper $zip, UrlHelper $url)
+    public function __construct(Config $config, Module $module, ModuleModel $module_model,
+                                Translation $translation, Job $job, Zip $zip, Url $url)
     {
         $this->config = $config;
         $this->module = $module;
@@ -136,7 +128,6 @@ class Install
         $this->zip = $zip;
         $this->url = $url;
         $this->job = $job;
-        $this->backup = $backup;
         $this->translation = $translation;
         $this->module_model = $module_model;
     }
@@ -223,7 +214,7 @@ class Install
             'module_id' => $this->module_id
         );
 
-        $result = $this->backup->backup('module', $module);
+        $result = $this->getBackupModule()->backup('module', $module);
 
         if ($result === true) {
             gplcart_file_delete_recursive($this->tempname);
@@ -235,6 +226,17 @@ class Install
     }
 
     /**
+     * Returns Backup module instance
+     * @return \gplcart\modules\backup\Main
+     */
+    protected function getBackupModule()
+    {
+        /** @var \gplcart\modules\backup\Main $instance */
+        $instance = $this->module->getInstance('backup');
+        return $instance;
+    }
+
+    /**
      * Extracts module files to the system directory
      * @return boolean
      */
@@ -243,11 +245,15 @@ class Install
         $this->destination = GC_DIR_MODULE . "/{$this->module_id}";
 
         if (file_exists($this->destination)) {
+
             $this->tempname = gplcart_file_unique($this->destination . '~');
+
             if (!rename($this->destination, $this->tempname)) {
-                $this->error = $this->translation->text('Failed to rename @old to @new', array('@old' => $this->destination, '@new' => $this->tempname));
+                $this->error = $this->translation->text('Failed to rename @old to @new', array(
+                    '@old' => $this->destination, '@new' => $this->tempname));
                 return false;
             }
+
             $this->renamed = true;
         }
 

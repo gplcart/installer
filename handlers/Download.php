@@ -9,9 +9,8 @@
 
 namespace gplcart\modules\installer\handlers;
 
-use gplcart\core\models\Language as LanguageModel,
-    gplcart\core\models\FileTransfer as FileTransferModel;
-use gplcart\modules\installer\models\Install as InstallerInstallModel;
+use gplcart\core\models\FileTransfer;
+use gplcart\modules\installer\models\Install;
 
 /**
  * Handler for Installer module
@@ -26,16 +25,16 @@ class Download
     protected $language;
 
     /**
-     * File transfer model instance
-     * @var \gplcart\core\models\FileTransfer $file_transfer
-     */
-    protected $file_transfer;
-
-    /**
      * Installer model class instance
      * @var \gplcart\modules\installer\models\Install $install
      */
     protected $install;
+
+    /**
+     * File transfer model instance
+     * @var \gplcart\core\models\FileTransfer $file_transfer
+     */
+    protected $file_transfer;
 
     /**
      * An array of errors
@@ -56,15 +55,13 @@ class Download
     protected $data_url;
 
     /**
-     * @param FileTransferModel $file_transfer
-     * @param LanguageModel $language
-     * @param InstallerInstallModel $install
+     * Download constructor.
+     * @param FileTransfer $file_transfer
+     * @param Install $install
      */
-    public function __construct(FileTransferModel $file_transfer, LanguageModel $language,
-            InstallerInstallModel $install)
+    public function __construct(FileTransfer $file_transfer, Install $install)
     {
         $this->install = $install;
-        $this->language = $language;
         $this->file_transfer = $file_transfer;
     }
 
@@ -82,7 +79,7 @@ class Download
             $this->job['done'] = $this->job['total'];
         } else {
             $this->install();
-            $this->job['done'] ++;
+            $this->job['done']++;
             $this->job['errors'] += $this->countErrors();
         }
     }
@@ -107,9 +104,9 @@ class Download
         }
 
         if ($this->install->isUpdate()) {
-            $this->job['updated'] ++;
+            $this->job['updated']++;
         } else {
-            $this->job['inserted'] ++;
+            $this->job['inserted']++;
         }
 
         return true;

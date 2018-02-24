@@ -1,23 +1,23 @@
 <?php
 
 /**
- * @package Installer 
- * @author Iurii Makukh <gplcart.software@gmail.com> 
- * @copyright Copyright (c) 2017, Iurii Makukh <gplcart.software@gmail.com> 
- * @license https://www.gnu.org/licenses/gpl-3.0.en.html GPL-3.0+ 
+ * @package Installer
+ * @author Iurii Makukh <gplcart.software@gmail.com>
+ * @copyright Copyright (c) 2017, Iurii Makukh <gplcart.software@gmail.com>
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GPL-3.0+
  */
 
 namespace gplcart\modules\installer\controllers;
 
-use gplcart\core\models\Module as ModuleModel,
-    gplcart\core\models\FileTransfer as FileTransferModel;
-use gplcart\core\controllers\backend\Controller as BackendController;
-use gplcart\modules\installer\models\Install as InstallerInstallModel;
+use gplcart\core\controllers\backend\Controller;
+use gplcart\core\models\FileTransfer;
+use gplcart\core\models\Module;
+use gplcart\modules\installer\models\Install;
 
 /**
  * Handles incoming requests and outputs data related to the Installer module
  */
-class Upload extends BackendController
+class Upload extends Controller
 {
 
     /**
@@ -39,12 +39,12 @@ class Upload extends BackendController
     protected $file_transfer;
 
     /**
-     * @param ModuleModel $module
-     * @param FileTransferModel $file_transfer
-     * @param InstallerInstallModel $install
+     * Upload constructor.
+     * @param Module $module
+     * @param FileTransfer $file_transfer
+     * @param Install $install
      */
-    public function __construct(ModuleModel $module, FileTransferModel $file_transfer,
-            InstallerInstallModel $install)
+    public function __construct(Module $module, FileTransfer $file_transfer, Install $install)
     {
         parent::__construct();
 
@@ -60,7 +60,6 @@ class Upload extends BackendController
     {
         $this->setTitleEditUpload();
         $this->setBreadcrumbEditUpload();
-
         $this->submitUpload();
         $this->outputEditUpload();
     }
@@ -70,8 +69,7 @@ class Upload extends BackendController
      */
     protected function setTitleEditUpload()
     {
-        $title = $this->text('Upload module');
-        $this->setTitle($title);
+        $this->setTitle($this->text('Upload module'));
     }
 
     /**
