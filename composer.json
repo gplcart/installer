@@ -11,9 +11,7 @@
   ],
   "license": "GPL-3.0-or-later",
   "require": {
-    "gplcart/composer-module-installer": "*",
+    "gplcart/composer-module-installer": "^1",
     "ext-zip": "*"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  }
 }
