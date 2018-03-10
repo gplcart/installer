@@ -9,8 +9,6 @@
 
 namespace gplcart\modules\installer;
 
-use gplcart\core\Container;
-
 /**
  * Main class for Installer module
  */
@@ -24,7 +22,7 @@ class Main
     public function hookModuleInstallBefore(&$result)
     {
         if (!class_exists('ZipArchive')) {
-            $result = $this->getTranslationModel()->text('Class ZipArchive does not exist');
+            $result = gplcart_text('Class ZipArchive does not exist');
         }
     }
 
@@ -81,15 +79,6 @@ class Main
     public function hookCronRunAfter()
     {
         gplcart_file_delete_recursive(gplcart_file_private_module('installer'));
-    }
-
-    /**
-     * Translation UI model class instance
-     * @return \gplcart\core\models\Translation
-     */
-    protected function getTranslationModel()
-    {
-        return Container::get('gplcart\\core\\models\\Translation');
     }
 
 }
